@@ -1,0 +1,20 @@
+{
+  "name": "language-pdx",
+  "version": "0.0.0",
+  "description": "A syntax highlighter and autocompleter for the scripting language used by Paradox.",
+  "keywords": [
+    "language", "pdx", "paradox"
+  ],
+  "author": "Emmia Silk <contact@emmiasilk.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EmmiaSilk/language-pdx"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EmmiaSilk/language-pdx/issues"
+  },
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  }
+}
