@@ -52,6 +52,9 @@ repository:
       },
       {
         include: '#strings'
+      },
+      {
+        include: '#basic-scopes'
       }
     ]
   },
@@ -79,7 +82,15 @@ repository:
         match: '\\b(yes|no)\\b'
       }
     ]
-  }
+  },
+  'basic-scopes': {
+    patterns: [
+      {
+        name: 'variable.language.scope.pdx'
+        match: '\\b(owner|emperor|ROOT|FROM|PREV)\\b'
+      }
+    ]
+  },
   'seperator': {
     patterns: [
       {
