@@ -11,6 +11,9 @@ patterns: [
   },
   {
     include: '#statement'
+  },
+  {
+    include: '#keys' # Removeme!
   }
 ]
 
@@ -24,11 +27,8 @@ repository:
     ]
   },
   'statement': {
-    # TODO: statement structure
     patterns: [
-      { # Structures
-
-      },
+      # TODO: Object/structure detection
       { # Single-line
         name: 'meta.statement.pdx'
         match: '''(?x)
@@ -40,8 +40,29 @@ repository:
           )
         '''
         captures:
+          1: {patterns: [{include: '#keys'}]}
           2: {patterns: [{include: '#seperator'}]}
           3: {patterns: [{include: '#values'}]}
+      }
+    ]
+  },
+  'keys': {
+    patterns: [
+      {
+        include: '#flow-control'
+      },
+      {
+        include: '#logic-operators'
+      },
+      {
+        include: '#commands'
+      },
+      {
+        include: '#structures'
+      },
+      {
+        name: 'variable.language.scope.pdx'
+        match: '\\b(namespace)\\b'
       }
     ]
   },
@@ -94,8 +115,190 @@ repository:
   'seperator': {
     patterns: [
       {
-        name: 'keyword.operator.assignment.pdx' # TODO: Find another scope for coloring '=' blue.
+        name: 'keyword.operator.assignment.pdx'
         match: '(=)'
       }
     ]
-  }
+  },
+  'flow-control': {
+    patterns: [
+      {
+        name: 'keyword.control.conditional.pdx'
+        match: '\\b(limit|if|else_if|else|while|trigger_switch|random|random_list|trigger|option)\\b'
+      }
+    ]
+  },
+  'logic-operators': {
+    patterns: [
+      {
+        name: 'keyword.control.logical'
+        match: '\\b(AND|OR|NOT)\\b'
+      }
+    ]
+  },
+  'commands': {
+    patterns: [
+      {
+        name: 'entity.name.function.common.pdx'
+        match: '''(?x)\\b
+          (?:
+              # Any scope
+              set_global_flag|clr_global_flag|custom_tooltip|log|save_event_target_as
+            | save_global_event_target_as|clear_global_event_target|clear_global_event_targets
+            | show_ambient_object|hide_ambient_object
+          )\\b
+        '''
+      },
+      {
+        name: 'entity.name.function.country.pdx'
+        match: '''(?x)\\b
+        # Country scope
+        (?:
+            # General
+            country_event|add_country_modifier|remove_country_modifier|set_country_flag
+          | clr_country_flag|change_tag|switch_tag|change_graphical_culture|add_adm_power
+          | add_dip_power|add_mil_power|set_saved_name|clear_saved_name
+            # Economy
+          | add_years_income|add_treasury|add_inflation|add_mercantilism|add_tariff_value
+          | loan_size|change_price
+            # Government
+          | add_absolutism|add_legitimacy|add_republican_tradition|add_scaled_republican_tradition
+          | add_devotion|add_horde_unity|add_meritocracy|set_meritocracy|add_militarized_society
+          | add_tribal_allegiance|change_statists_vs_orangists|change_government
+          | set_government_rank|add_government_power|set_government_and_rank|dissolve_parliamant
+          | reinstate_parliament
+            # Culture
+          | add_accepted_culture|change_primary_culture|remove_accepted_culture
+            # Religion
+          | change_religion|enable_religion|force_converted|add_authority|add_doom
+          | remove_religious_reforms|add_fervor|add_karma|set_karma|add_church_power
+          | add_church_aspect|remove_church_aspect|add_papal_influence|add_reform_desire
+          | excommunicate|set_papacy_active|add_piety|set_school_opinion|add_patriarch_authority
+          | change_personal_deity|add_harmony|add_harmonized_religion|add_harmonization_process
+          | unlock_cult|add_isolationism|set_isolationism|add_incident_variable_value
+          | set_incident_variable_value
+            # Technology
+          | add_idea|add_idea_group|add_active_policy|change_technology_group|remove_idea
+          | remove_idea_group|set_primitive|swap_free_idea_group|add_next_institution_advancement
+          | add_adm_tech|add_dip_tech|add_mil_tech
+            # Court
+          | add_prestige|add_corruption|add_splendor|create_advisor|kill_advisor|remove_advisor
+          | remove_advisor_by_category|define_advisor
+            # Stability
+          | add_stability|add_war_exhaustion|add_liberty_desire|disband_rebels|collapse_nation
+          | add_disaster_modifier|add_disaster_progress|end_disaster
+            # Military
+          | add_army_tradition|add_navy_tradition|add_army_professionalism|add_manpower|add_sailors
+          | add_yearly_manpower|add_yearly_sailors|create_admiral|create_explorer
+          | create_conquistador|create_general|change_unit_type|kill_leader|define_admiral
+          | define_explorer|define_conquistador|define_general|artillery|cavalry|infantry
+          | mercenary_infantry|mercenary_cavalry|heavy_ship|light_ship|galley|transport
+            # Diplomacy
+          | add_historical_friend|add_historical_rival|remove_historical_friend
+          | remove_historical_rival|add_trust|add_opinion|reverse_add_opinion|remove_opinion
+          | reverse_remove_opinion|create_alliance|create_guarantee|create_marriage|create_union
+          | create_vassal|create_march|vassalize|create_subject|break_marriage|break_union|inherit
+          | release|release_all_subjects|grant_independence|declare_war|declare_war_with_cb
+          | add_truce_with|white_peace|form_coalition_against|add_causus_belli
+          | reverse_add_causus_belli|remove_causus_belli|reverse_remove_causus_belli|remove_fow
+          | add_spy_network_from|add_spy_network_in
+            # Estates and factions
+          | create_independent_estate|create_independent_estate_from_religion
+          | add_estate_influence_modifier|add_estate_loyalty|add_estate_loyalty_modifier
+          | add_faction|remove_faction|add_faction_influence
+            # Ruler
+          | change_adm|change_dip|change_mil|add_ruler_personality|remove_ruler_personality
+          | set_ruler_flag|clr_ruler_flag|set_dynasty|set_ruler_culture|set_ruler_religion
+          | exile_ruler_as|set_ruler|kill_ruler|convert_female_ruler_to_general
+          | convert_ruler_to_general|add_ruler_modifier|define_ruler_to_general
+          | define_leader_to_ruler|define_ruler
+            # Consort
+          | add_queen_personality|remove_queen_personality|set_consort_flag|clr_consort_flag
+          | set_consort_culture|set_consort_religion|change_consort_regent_to_ruler|remove_consort
+          | define_consort
+            # Heir
+          | change_heir_adm|change_heir_dip|change_heir_mil|change_heir_personality
+          | remove_heir_personality|set_heir_flag|clr_heir_flag|add_heir_claim|add_heir_support
+          | set_heir_culture|set_heir|religion|exile_heir_as|set_heir|kill_heir|remove_heir
+          | convert_female_heir_to_general|convert_heir_to_general|define_heir_to_general
+          | define_heir
+            # Holy Roman Empire and such
+          | add_imperial_influence|add_scaled_imperial_influence|elector|revoke_reform
+          | set_in_empire|hre_inheritable|imperial_ban_allowed|internal_hre_cb
+          | set-allow-female_emperor|dismantle_hre|enable_hre_leagues|set_hre_religion
+          | set_hre_heretic_religion|set_hre_religion_locked|set_hre_religion_treaty|join_league
+          | leave_league|dismantle_empire_of_china|set_emperor_of_china|add_mandate|set_mandate
+          | set_revolution_target
+            # AI
+          | set_ai_personality
+          | set_ai_attitude
+
+        )\\b
+        '''
+      },
+      {
+        name: 'entity.name.function.province'
+        match: '''(?x)\\b
+        # Province Scope
+        (?:
+            # General
+            province_event|add_province_modifier|add_permanent_province_modifier
+          | add_province_triggered_modifier|extend_province_modifier|remove_province_modifier
+            # Development
+          | add_base_tax|add_base_production|add_base_manpower|add_prosperity|add_devastation
+          | add_local_autonomy|set_local_autonomy|change_trade_goods|add_scaled_local_adm_power
+          | add_scaled_local_dip_power|add_scaled_local_mil_power|cancel_construction
+          | add_great_project|add_construction_progress|add_building|remove_building
+          | add_building_construction
+            # Society
+          | create_advisor|set_seat_in_parliament|back_current_issue|change_culture
+          | add_culture_construction|change_religion|change_to_secondary_religion|send_missionary
+          | add_cardinal|remove_cardinal|add_reform_center|remove_reform_center|set_estate
+          | remove_estate|set_in_empire|add_institution_embracement
+            # Unrest
+          | add_nationalism|add_unrest|create_native|create_pirate|create_revolt|spawn_rebels
+            # Colonization
+          | create_colony|add_colonysize|multiply_colonysize|add_siberian_construction
+          | change_native_ferocity|change_native_hostileness|change_native_size|discover_country
+          | undiscover_country
+            # Diplomacy
+          | add_claim|add_core|add_core_construction|add_permanent_claim|add_territorial_core
+          | cede_province|change_controller|remove_claim|remove_core|remove_territorial_core
+            # Military
+          | artillery|cavalry|infantry|mercenary_infantry|mercenary_cavalry|streltsy_infantry
+          | cossack_cavalry|heavy_ship|light_ship|galley|transport|kill_leader|kill_units
+          | add_unit_construction|build_to_forcelimit|remove_loot|change_siege
+            # Trade
+          | recall_merchant|add_trade_node_income|add_trade_modifier|remove_trade_modifier
+        )\\b
+        '''
+      },
+      {
+        name: 'entity.name.function.tooltip'
+        match: '''(?x)\\b
+        # Tooltip
+        (?:
+          hidden_effect|tooltip
+        )\\b
+        '''
+      }
+    ]
+  },
+  'structures': {
+    patterns: [
+      {
+        name: 'entity.name.class.pdx'
+        match: '\\b(country_event|province_event|country_decisions)\\b'
+      },
+      {
+        name: 'variable.other.member.pdx'
+        match: '''(?x)\\b
+          (?:
+              id|name|title|desc|picture|mean_time_to_happen|months|fire_only_once|hidden
+            | is_triggered_only|days|immediate|ai_chance|ai_will_do|factor|modifier|duration
+            | effect|allow|ai|potential|major
+          )\\b
+        '''
+      }
+    ]
+  },
