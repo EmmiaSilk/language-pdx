@@ -1,0 +1,90 @@
+scopeName: 'source.pdx'
+name: 'PDX Script'
+fileTypes: ['txt', 'pdx']
+firstLineMatch: ''
+foldingStartMarker: '\\{\\s*$'
+foldingEndMarker: '^\\s*\\}'
+
+patterns: [
+  {
+    include: '#comment'
+  },
+  {
+    include: '#statement'
+  }
+]
+
+repository:
+  'comment': {
+    patterns: [
+      {
+        name: 'comment.line.number-sign.pdx'
+        match: '\\#.*$\\n?'
+      }
+    ]
+  },
+  'statement': {
+    # TODO: statement structure
+    patterns: [
+      { # Structures
+
+      },
+      { # Single-line
+        name: 'meta.statement.pdx'
+        match: '''(?x)
+          (\\w+) \\s*
+          (=) \\s*
+          (
+            ([-\\w\\.]+) |
+            (\\"[\\w\\s\\.]+\\")
+          )
+        '''
+        captures:
+          2: {patterns: [{include: '#seperator'}]}
+          3: {patterns: [{include: '#values'}]}
+      }
+    ]
+  },
+  'values': {
+    patterns: [
+      {
+        include: '#constants'
+      },
+      {
+        include: '#strings'
+      }
+    ]
+  },
+  'strings': {
+    patterns: [
+      {
+        name: 'string.pdx'
+        match: '\\"[\\w\\s\\.]+\\"'
+      }
+    ]
+  },
+  'constants': {
+    patterns: [
+      {
+        # TODO: Don't capture numbers that are part of names (Example: 'attunement.2.title')
+        name: 'constant.numeric.float.pdx'
+        match: '\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))\\b'
+      },
+      {
+        name: 'constant.numeric.dates.pdx'
+        match: '\\b\\d+\\.\\d+\\.\\d+\\b'
+      },
+      {
+        name: 'constant.language.boolean.pdx'
+        match: '\\b(yes|no)\\b'
+      }
+    ]
+  }
+  'seperator': {
+    patterns: [
+      {
+        name: 'keyword.operator.assignment.pdx' # TODO: Find another scope for coloring '=' blue.
+        match: '(=)'
+      }
+    ]
+  }
