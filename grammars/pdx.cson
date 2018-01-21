@@ -25,7 +25,6 @@ repository:
   },
   'statement': {
     patterns: [
-      # TODO: Object/structure detection
       { # Object
         name: 'meta.statement.block'
         begin: '''(?x)
@@ -80,6 +79,9 @@ repository:
       {
         name: 'variable.language.scope.pdx'
         match: '\\b(namespace)\\b'
+      },
+      {
+        include: '#basic-scopes'
       }
     ]
   },
@@ -90,9 +92,6 @@ repository:
       },
       {
         include: '#strings'
-      },
-      {
-        include: '#basic-scopes'
       }
     ]
   },
