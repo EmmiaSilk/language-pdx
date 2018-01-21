@@ -11,9 +11,6 @@ patterns: [
   },
   {
     include: '#statement'
-  },
-  {
-    include: '#keys' # Removeme!
   }
 ]
 
@@ -29,8 +26,28 @@ repository:
   'statement': {
     patterns: [
       # TODO: Object/structure detection
+      { # Object
+        name: 'meta.statement.block'
+        begin: '''(?x)
+          ([a-zA-Z_]+)\\s?
+          (=)\\s?
+          ({)
+        '''
+        beginCaptures:
+          1: {patterns: [{include: '#keys'}]}
+          2: {name: 'keyword.operator.assignment.pdx'}
+          3: {name: 'punctuation.definition.block.begin'}
+        end: '(})'
+        endCaptures:
+          1: {name: 'punctuation.definition.block.end'}
+        patterns: [
+          {
+            include: '#statement'
+          }
+        ]
+      },
       { # Single-line
-        name: 'meta.statement.pdx'
+        name: 'meta.statement.single.pdx'
         match: '''(?x)
           (\\w+) \\s*
           (=) \\s*
@@ -41,7 +58,7 @@ repository:
         '''
         captures:
           1: {patterns: [{include: '#keys'}]}
-          2: {patterns: [{include: '#seperator'}]}
+          2: {name: 'keyword.operator.assignment.pdx'}
           3: {patterns: [{include: '#values'}]}
       }
     ]
@@ -109,14 +126,6 @@ repository:
       {
         name: 'variable.language.scope.pdx'
         match: '\\b(owner|emperor|ROOT|FROM|PREV)\\b'
-      }
-    ]
-  },
-  'seperator': {
-    patterns: [
-      {
-        name: 'keyword.operator.assignment.pdx'
-        match: '(=)'
       }
     ]
   },
