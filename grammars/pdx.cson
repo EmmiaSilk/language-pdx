@@ -19,7 +19,7 @@ repository:
     patterns: [
       {
         name: 'comment.line.number-sign.pdx'
-        match: '\\#.*$\\n?'
+        match: '\\#.*$'
       }
     ]
   },
@@ -40,6 +40,9 @@ repository:
         endCaptures:
           1: {name: 'punctuation.definition.block.end'}
         patterns: [
+          {
+            include: '#comment'
+          },
           {
             include: '#statement'
           }
