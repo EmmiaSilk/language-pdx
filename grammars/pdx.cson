@@ -25,37 +25,14 @@ repository:
   },
   'statement': {
     patterns: [
-      { # Object
-        name: 'meta.statement.block'
-        begin: '''(?x)
-          ([a-zA-Z_]+)\\s?
-          (=)\\s?
-          ({)
-        '''
-        beginCaptures:
-          1: {patterns: [{include: '#keys'}]}
-          2: {name: 'keyword.operator.assignment.pdx'}
-          3: {name: 'punctuation.definition.block.begin'}
-        end: '(})'
-        endCaptures:
-          1: {name: 'punctuation.definition.block.end'}
-        patterns: [
-          {
-            include: '#comment'
-          },
-          {
-            include: '#statement'
-          }
-        ]
-      },
-      { # Single-line
-        name: 'meta.statement.single.pdx'
+      {
+        name: 'meta.statement.pdx'
         match: '''(?x)
           (\\w+) \\s*
           (=) \\s*
           (
-            ([-\\w\\.]+) |
-            (\\"[\\w\\s\\.]+\\")
+            (?:\\"?[\\d\\w\\-\\.]+\\"?) |
+            (?:{)
           )
         '''
         captures:
@@ -91,11 +68,26 @@ repository:
   'values': {
     patterns: [
       {
+        include: '#blocks'
+      },
+      {
         include: '#constants'
       },
       {
         include: '#strings'
       }
+    ]
+  },
+  'blocks': {
+    name: 'meta.statement.block.pdx'
+    begin: '{'
+    beginCaptures:
+      0: {name: 'punctuation.definition.block.begin'}
+    end: '}'
+    endCaptures:
+      0: {name: 'punctuation.definition.block.end'}
+    patterns: [
+      {patterns: [{include: '#statements'}]}
     ]
   },
   'strings': {
